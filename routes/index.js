@@ -3,7 +3,7 @@ var router = express.Router();
 const User = require("../models/user");
 const bcrypt = require("bcryptjs");
 const passport = require("passport");
-const LocalStrategy =  require("passport-local");
+const LocalStrategy =  require("passport-local").Strategy;
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -42,7 +42,8 @@ router.post('/signup', (req, res,next) => {
 passport.use(
   new LocalStrategy(async(email, password, done) => {
     try {
-      const user = await User.findOne({ email: email });
+      const user = await User.findOne({ email: email }).exec();
+      console.log("in")
       if (!user) {
         return done(null, false, { message: "Incorrect email" });
       };
@@ -68,14 +69,13 @@ passport.deserializeUser(function(id, done) {
   });
 });
 
+
 router.post(
   '/login',
-  passport.authenticate('local', { failureRedirect: '/login' }),
-  function(req, res) {
-    res.redirect('/');
-  });
+  passport.authenticate('local', {successRedirect: "/", failureRedirect: '/login' }),
+);
 
-router.use(passport.initialize());
+
 
 router.use(function(req, res, next) {
   res.locals.currentUser = req.user;
