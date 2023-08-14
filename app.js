@@ -1,56 +1,14 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+const createError = require('http-errors');
+const express = require('express');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
 const passport = require("passport");
-const LocalStrategy =  require("passport-local").Strategy;
-const User = require("./models/user");
-const bcrypt = require("bcryptjs");
-const session = require('express-session')
-
-// connect to database
-const mongoose = require("mongoose");
-mongoose.set("strictQuery", false);
-const mongoDB = "mongodb+srv://admin:2JpQfjIXywT7yXkJ@cluster0.fvsxm3m.mongodb.net/?retryWrites=true&w=majority"
-main().catch(err => console.log(err))
-async function main() {
-  await mongoose.connect(mongoDB)
-}
+const session = require('express-session');
+require("./controllers/passport"); //passport Authentication strategy
+require("./controllers/mongoose"); //mongoose database connection
 
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-
-// login
-passport.use(
-  new LocalStrategy(async(email, password, done) => {
-    try {
-      const user = await User.findOne({ email: email }).exec();
-      console.log(user)
-      if (!user) {
-        return done(null, false, { message: "Incorrect email" });
-      };
-      const match = await bcrypt.compare(password, user.password);
-      if (!match) {
-        // passwords do not match!
-        return done(null, false, { message: "Incorrect password" })
-      }
-      return done(null, user);
-    } catch(err) {
-      return done(err);
-    };
-  })
-);
-
-passport.serializeUser(function(user, done) {
-  done(null, user.id);
-});
-
-passport.deserializeUser(function(id, done) {
-  User.findById(id, function(err, user) {
-    done(err, user);
-  });
-});
 
 var app = express();
 // view engine setup
