@@ -6,10 +6,10 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const passport = require("passport");
 const session = require('express-session');
+require('dotenv').config();
 require("./passport"); //passport Authentication strategy
 require("./mongoose"); //mongoose database connection
 
-const indexRouter = require('./routes/index');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -20,7 +20,7 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(session({
-  secret: "secret",
+  secret: process.env.SESSION_SECRETE,
   resave: false ,
   saveUninitialized: true ,
 }))
@@ -34,7 +34,7 @@ app.use(function(req, res, next) {
   next();
 });
 
-app.use('/', indexRouter);
+app.use('/', require('./routes/index'));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
