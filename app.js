@@ -1,16 +1,16 @@
 const createError = require('http-errors');
 const express = require('express');
+const app = express();
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const passport = require("passport");
 const session = require('express-session');
-require("./controllers/passport"); //passport Authentication strategy
-require("./controllers/mongoose"); //mongoose database connection
+require("./passport"); //passport Authentication strategy
+require("./mongoose"); //mongoose database connection
 
-var indexRouter = require('./routes/index');
+const indexRouter = require('./routes/index');
 
-var app = express();
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
