@@ -7,7 +7,8 @@ const UserSchema = new Schema({
     email: {type: String, required: true},
     date_of_birth: {type: Date},
     date_created: {type: Date, default: Date.now},
-    password: {type: String, required: true, minLength: 8}
+    password: {type: String, required: true, minLength: 8},
+    member: {type: Boolean, default: false}
 });
 
 UserSchema.virtual("url").get(function () {
