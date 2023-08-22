@@ -1,8 +1,9 @@
 const mongoose = require("mongoose");
+const user = require("./user");
 
 const Schema = mongoose.Schema;
 const messageSchema = new Schema({
-    user: {type: Schema.Types.ObjectId, required: true},
+    user: {type: Schema.Types.ObjectId, ref: user, required: true},
     timestamp: {type: Date, default: Date.now},
     message: {type: String, required: true},
 });
