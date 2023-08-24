@@ -30,10 +30,10 @@ exports.signup_get = (req, res, next) => {
   res.render("sign_up");
 };
 
-exports.login_post = passport.authenticate(
-  "local",
-  { failureRedirect: "/login", successRedirect: "/" },
-);
+exports.login_post = passport.authenticate("local", {
+  failureRedirect: "/login",
+  successRedirect: "/",
+});
 
 exports.login_get = (req, res, next) => {
   res.render("log_in");
