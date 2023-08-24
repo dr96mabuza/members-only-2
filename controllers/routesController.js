@@ -2,31 +2,30 @@ const bcrypt = require("bcryptjs");
 const passport = require("passport");
 const User = require("../models/user");
 
-exports.home_get = (req, res, next) => {
+exports.home_get = (req, res) => {
   res.render("index", { title: "Express", user: req.user });
 };
 
 exports.signup_post = (req, res, next) => {
-  bcrypt.hash(req.body.password, 10, (err, hash) => {
-    if (err) {
+  bcrypt.hash(req.body.password, 10, async (err, hash) => {
+    try {
+      const user = new User({
+        first_name: req.body.first_name,
+        last_name: req.body.last_name,
+        email: req.body.email,
+        date_of_birth: req.body.date_of_birth,
+        password: hash,
+      });
+
+      const result = await user.save();
+      res.redirect("/login");
+    } catch (error) {
       return next(err);
     }
-    const user = new User({
-      first_name: req.body.first_name,
-      last_name: req.body.last_name,
-      email: req.body.email,
-      date_of_birth: req.body.date_of_birth,
-      password: hash,
-    }).save((err) => {
-      if (err) {
-        return next(err);
-      }
-      res.redirect("/login");
-    });
   });
 };
 
-exports.signup_get = (req, res, next) => {
+exports.signup_get = (req, res) => {
   res.render("sign_up");
 };
 
@@ -35,6 +34,6 @@ exports.login_post = passport.authenticate("local", {
   successRedirect: "/",
 });
 
-exports.login_get = (req, res, next) => {
+exports.login_get = (req, res) => {
   res.render("log_in");
 };
